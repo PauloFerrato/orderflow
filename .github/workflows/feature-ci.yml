@@ -5,6 +5,10 @@ on:
     branches:
       - 'feature/**'
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   build-test-and-pr:
     runs-on: ubuntu-latest
@@ -20,16 +24,14 @@ jobs:
           java-version: '21'
 
       - name: Build e testes
-        run: mvn clean test
+        run: mvn -f app/pom.xml clean test
 
-      # Cria PR automaticamente se testes passarem
-      - name: Criar Pull Request para develop
-        uses: peter-evans/create-pull-request@v6
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          base: develop
-          branch: ${{ github.ref_name }}
-          title: "Auto PR: ${{ github.ref_name }} -> develop"
-          body: |
-            PR criado automaticamente após sucesso nos testes.
-          draft: false
+      - name: Criar PR via GitHub CLI
+        run: |
+          gh pr create \
+            --base develop \
+            --head ${{ github.ref_name }} \
+            --title "Auto PR: ${{ github.ref_name }} -> develop" \
+            --body "PR criado automaticamente."
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
