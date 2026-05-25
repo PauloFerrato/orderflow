@@ -23,7 +23,7 @@ jobs:
         run: mvn -f app/pom.xml clean test
 
       # Cria PR automaticamente se testes passarem
-      - name: Criar Pull Request para develop
+      - name: Criar Pull Request to develop
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -31,5 +31,5 @@ jobs:
           branch: ${{ github.ref_name }}
           title: "Auto PR: ${{ github.ref_name }} -> develop"
           body: |
-            PR criado automaticamente após sucesso nos testes.
+            PR created automatically.
           draft: false
