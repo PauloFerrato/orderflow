@@ -20,7 +20,7 @@ jobs:
           java-version: '21'
 
       - name: Build e testes
-        run: mvn clean test
+        run: mvn -f app/pom.xml clean test
 
       # Cria PR automaticamente se testes passarem
       - name: Criar Pull Request para develop
