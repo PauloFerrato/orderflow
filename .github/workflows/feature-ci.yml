@@ -1,0 +1,35 @@
+name: Feature Branch CI
+
+on:
+  push:
+    branches:
+      - 'feature/**'
+
+jobs:
+  build-test-and-pr:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Build e testes
+        run: mvn clean test
+
+      # Cria PR automaticamente se testes passarem
+      - name: Criar Pull Request para develop
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          base: develop
+          branch: ${{ github.ref_name }}
+          title: "Auto PR: ${{ github.ref_name }} -> develop"
+          body: |
+            PR criado automaticamente após sucesso nos testes.
+          draft: false
